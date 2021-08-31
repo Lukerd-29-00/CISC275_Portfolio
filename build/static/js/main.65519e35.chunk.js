@@ -1,2 +1,0 @@
-(this["webpackJsonphooks-basic"]=this["webpackJsonphooks-basic"]||[]).push([[0],{4:function(t,e,s){"use strict";s.r(e);var n=s(0),o=s.n(n),c=s(2),i=s.n(c),r=(s(9),s(3));i.a.render(Object(r.jsx)(o.a.StrictMode,{children:"test text"}),document.getElementById("root"))},9:function(t,e,s){}},[[4,1,2]]]);
-//# sourceMappingURL=main.65519e35.chunk.js.map
