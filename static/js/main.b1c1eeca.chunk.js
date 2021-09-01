@@ -1,0 +1,2 @@
+(this["webpackJsonphooks-basic"]=this["webpackJsonphooks-basic"]||[]).push([[0],{4:function(s,t,i){"use strict";i.r(t);var o=i(0),e=i.n(o),n=i(3),r=i.n(n),c=(i(9),i(1));r.a.render(Object(c.jsxs)(e.a.StrictMode,{children:["Hi! my name is Lucas Driscoll, and this is the first page of my CISC 275-010 portfolio! this page is hosted on github pages using ",Object(c.jsx)("a",{href:"https://github.com/Lukerd-29-00/Portfolio",children:"this repository"}),"."]}),document.getElementById("root"))},9:function(s,t,i){}},[[4,1,2]]]);
+//# sourceMappingURL=main.b1c1eeca.chunk.js.map
