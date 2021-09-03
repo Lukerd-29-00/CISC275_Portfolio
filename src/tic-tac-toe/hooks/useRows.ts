@@ -1,15 +1,19 @@
 import { useState } from "react";
 
-export function useRows(): [Array<Array<"X" | "O" | null>>,(column: number, row: number, turn: "X" | "O") => undefined]{
-    let init = new Array<Array<"X" | "O" | null>>(3);
-    for(let i = 0;i < init.length;i++){
+function emptySquares(){
+    const output = Array<Array<"X" | "O" | null>>(3);
+    for(let i = 0;i < output.length;i++){
         let row = new Array<null>(3);
         for(let j = 0;j < row.length;j++){
             row[j] = null;
         }
-        init[i] = row;
+    output[i] = row;
     }
-    const [rows, updateRows] = useState(init);
+    return output;
+}
+
+export function useRows(): [Array<Array<"X" | "O" | null>>,(column: number, row: number, turn: "X" | "O") => undefined]{
+    const [rows, updateRows] = useState(emptySquares);
     const updateSquare = (column: number,row: number,turn: "X" | "O") => {
         if(rows[row][column] == null){
             let newRows = new Array<Array<"X" | "O" | null>>(3);
