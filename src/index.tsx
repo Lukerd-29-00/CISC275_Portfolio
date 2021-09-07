@@ -5,12 +5,9 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
-  //<React.StrictMode>
-    //<App />
-  //</React.StrictMode>,
-  <div>
-    <p>testing a script I use to deploy quickly, the normal page will be back shortly.</p>
-  </div>,
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
   document.getElementById('root')
 );
 
