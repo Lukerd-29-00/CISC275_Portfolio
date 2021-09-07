@@ -21,14 +21,14 @@ export function Board(props: empty): JSX.Element{
     return(
         <>
         <div className="game-info">
-            {winner == "nobody" ? <p>{turn}'s turn</p> : <p>Winner: {winner}</p>}
+            {winner == "nobody" ? <p>{turn}'s turn</p> : winner == "tie" ? <p>Tie!</p> : <p>Winner: {winner}</p>}
         </div>
         <div className="game-board">
             {rows.map((row: Array<"X" | "O" | null>,i: number, array: Array<Array<"X" | "O" | null>>) => {
                 return <div className="board-row">
                     {array[i].map((value: "X" | "O" | null,j: number) => {
                         if(isValidTurn(turn)){
-                            return <button className="square" onClick={() => {updateSquare(j,i,turn); changeTurn(turn == "X" ? "O" : "X")}} disabled={winner != "nobody"}>{value}</button>
+                            return <button key={Math.floor(i/3) + j % 3} onClick={() => {updateSquare(j,i,turn); changeTurn(turn == "X" ? "O" : "X")}} disabled={winner != "nobody"}>{value}</button>
                         }
                         else{
                             throw Error(`Invalid player ${turn}`);
@@ -47,7 +47,13 @@ function getSquare(board: Array<Array<"X" | "O" | null>>,i: number): "X" | "O" |
     return board[Math.floor(i/3)][i % 3]
 }
 
-function Winner(board: Array<Array<"X" | "O" | null>>): "X" | "O" | null{
+interface Counter {
+    X: number,
+    O: number,
+    empty: number
+}
+
+function Winner(board: Array<Array<"X" | "O" | null>>): "X" | "O" | "tie" | null{
     const victory_triplets = [
         [0,1,2],
         [0,3,6],
@@ -58,21 +64,29 @@ function Winner(board: Array<Array<"X" | "O" | null>>): "X" | "O" | null{
         [6,4,2],
         [6,7,8]
     ]
-
+    let tie = true;
     for(let win = 0;win < victory_triplets.length;win++){
-        let won = true;
+        let counter: Counter = {X: 0,O: 0,empty: 0}
         let cmp = getSquare(board,victory_triplets[win][0])
-        if(cmp == null){
-            continue;
-        }
-        for(let i = 1;i < 3;i++){
-            if(getSquare(board,victory_triplets[win][i]) !== cmp){
-                won = false;
+        for(let i = 0;i < 3;i++){
+            let square = getSquare(board,victory_triplets[win][i]);
+            if(square == null){
+                counter.empty++;
             }
+            else if(square == "X"){
+                counter.X++;
+            }
+            else{
+                counter.O++;
+            }
+
         }
-        if(won){
+        if(counter.X == 3 || counter.O == 3){
             return cmp;
         }
+        if((counter.X + counter.empty == 3) || (counter.O + counter.empty == 3)){
+            tie = false;
+        }
     }
-    return null;
+    return tie ? "tie" : null;
 }

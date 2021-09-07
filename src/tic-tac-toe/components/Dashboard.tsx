@@ -20,6 +20,6 @@ export function Dashboard(props: dashboardProps){
         </section>
 
     ) : (
-        <Inactive func = {props.enable}/>
+        <Inactive enabler = {props.enable}/>
     )
 }
