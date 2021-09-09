@@ -10,8 +10,11 @@ export function Changelog(props: ChangelogProps){
     if(props.active){
         let weeks = new Array<Array<string>>();
         let week_one = new Array<string>();
-        week_one.push("Created page and basic description for its purpose.");
-        week_one.push("Added interface to show or hide components to view different projects.")
+        week_one.push("Created this page for the portfolio and added my name, email, and the repository this page is being hosted from to it.");
+        week_one.push("Created the tic-tac-toe game and added it to this page (see the game above for the description.)");
+        week_one.push("Added the changelog and the todo list to this page.")
+        week_one.push("Added a button to hide all open apps to this page.")
+        week_one.push("Added interface to show or hide react components to view different projects.")
         week_one.push("Updated tic-tac-toe game to tie when the game can no longer be won.")
         weeks.push(week_one);
     
@@ -31,7 +34,6 @@ export function Changelog(props: ChangelogProps){
                 <footer>
                     <button className="small-link" onClick={props.disable}>collapse</button>
                 </footer>
-                <hr/>
         </section>
     }
     else{

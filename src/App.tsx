@@ -36,7 +36,9 @@ function App() {
     <hr/>
     <footer>
       <Changelog disable = {() => {stopViewing(Changelog)}} enable={() => {addViewing(Changelog)}} active={viewing.includes(Changelog)}/>
+      {viewing.includes(Changelog) || viewing.includes(Todo) ? <hr/> : <></>}
       <Todo disable={() => {stopViewing(Todo)}} enable={() => {addViewing(Todo)}} active={viewing.includes(Todo)}/>
+      {viewing.includes(Todo) ? <hr/> : <></>}
       <button className="link" onClick={viewNothing}>Hide all</button>
     </footer>
   </section>

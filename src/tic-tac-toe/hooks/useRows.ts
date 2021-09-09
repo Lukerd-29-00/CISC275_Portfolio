@@ -12,32 +12,34 @@ function emptySquares(){
     return output;
 }
 
-export function useRows(): [Array<Array<"X" | "O" | null>>,(column: number, row: number, turn: "X" | "O") => undefined]{
+export function useRows(): [Array<Array<"X" | "O" | null>>,(column: number, row: number, turn: "X" | "O") => undefined, () => void]{
     const [rows, updateRows] = useState(emptySquares);
     const updateSquare = (column: number,row: number,turn: "X" | "O") => {
-        if(rows[row][column] == null){
-            let newRows = new Array<Array<"X" | "O" | null>>(3);
-            let newRow = new Array<"X" | "O" | null>(3);
-            for(let i = 0;i < newRow.length;i++){
-                if(i != column){
-                    newRow[i] = rows[row][i]
-                }
-                else{
-                    newRow[i] = turn;
-                }
+        let newRows = new Array<Array<"X" | "O" | null>>(3);
+        let newRow = new Array<"X" | "O" | null>(3);
+        for(let i = 0;i < newRow.length;i++){
+            if(i !== column){
+                newRow[i] = rows[row][i]
             }
-            for(let i = 0;i < newRows.length;i++){
-                if(i != row){
-                    newRows[i] = rows[i]
-                }
-                else{
-                    newRows[i] = newRow;
-                }
+            else{
+                newRow[i] = turn;
             }
-            updateRows(newRows);
-            return undefined;
         }
+        for(let i = 0;i < newRows.length;i++){
+            if(i !== row){
+                newRows[i] = rows[i]
+            }
+            else{
+                newRows[i] = newRow;
+            }
+        }
+        updateRows(newRows);
+        return undefined;
+        
     }
-    return [rows, updateSquare];
+    const emptyAll = () => {
+        updateRows(emptySquares());
+    }
+    return [rows, updateSquare, emptyAll];
 
 }

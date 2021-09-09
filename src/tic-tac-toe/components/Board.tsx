@@ -6,29 +6,29 @@ interface empty {
 }
 
 function isValidTurn(turn: string):turn is "X" | "O"{
-    return turn == "X" || turn == "O";
+    return turn === "X" || turn === "O";
 }
 
 export function Board(props: empty): JSX.Element{
-    const [rows, updateSquare] = useRows();
+    const [rows, updateSquare, clearBoard] = useRows();
     const [turn, changeTurn] = useState("X");
     const [winner, setWinner] = useState("nobody");
     const newWinner = Winner(rows);
-    if(newWinner != null && winner == "nobody"){
+    if(newWinner !== null && winner === "nobody"){
         setWinner(newWinner);
     }
 
     return(
         <>
         <div className="game-info">
-            {winner == "nobody" ? <p>{turn}'s turn</p> : winner == "tie" ? <p>Tie!</p> : <p>Winner: {winner}</p>}
+            {winner === "nobody" ? <p>{turn}'s turn</p> : winner === "tie" ? <p>Tie!</p> : <p>Winner: {winner}</p>}
         </div>
         <div className="game-board">
             {rows.map((row: Array<"X" | "O" | null>,i: number, array: Array<Array<"X" | "O" | null>>) => {
-                return <div className="board-row">
+                return <div key={i} className="board-row">
                     {array[i].map((value: "X" | "O" | null,j: number) => {
                         if(isValidTurn(turn)){
-                            return <button key={Math.floor(i/3) + j % 3} onClick={() => {updateSquare(j,i,turn); changeTurn(turn == "X" ? "O" : "X")}} disabled={winner != "nobody"}>{value}</button>
+                            return <button key={Math.floor(i/3) + j % 3} onClick={() => {updateSquare(j,i,turn); changeTurn(turn === "X" ? "O" : "X")}} disabled={winner !== "nobody" || rows[i][j] != null}>{value}</button>
                         }
                         else{
                             throw Error(`Invalid player ${turn}`);
@@ -36,6 +36,7 @@ export function Board(props: empty): JSX.Element{
                     })}
                 </div>
             })}
+            <button onClick={() => {setWinner("nobody"); clearBoard(); changeTurn("X");}}>reset</button>
         </div>
         </>
 
@@ -70,10 +71,10 @@ function Winner(board: Array<Array<"X" | "O" | null>>): "X" | "O" | "tie" | null
         let cmp = getSquare(board,victory_triplets[win][0])
         for(let i = 0;i < 3;i++){
             let square = getSquare(board,victory_triplets[win][i]);
-            if(square == null){
+            if(square === null){
                 counter.empty++;
             }
-            else if(square == "X"){
+            else if(square === "X"){
                 counter.X++;
             }
             else{
@@ -81,10 +82,10 @@ function Winner(board: Array<Array<"X" | "O" | null>>): "X" | "O" | "tie" | null
             }
 
         }
-        if(counter.X == 3 || counter.O == 3){
+        if(counter.X === 3 || counter.O === 3){
             return cmp;
         }
-        if((counter.X + counter.empty == 3) || (counter.O + counter.empty == 3)){
+        if((counter.X + counter.empty === 3) || (counter.O + counter.empty === 3)){
             tie = false;
         }
     }

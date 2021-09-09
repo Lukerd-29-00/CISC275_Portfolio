@@ -1,4 +1,3 @@
-import { isPropertySignature } from "typescript";
 import { Board } from "./Board";
 import { Inactive } from "../inactive/Inactive";
 
