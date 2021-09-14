@@ -13,7 +13,10 @@ export function Board(props: empty): JSX.Element{
     const [rows, updateSquare, clearBoard] = useRows();
     const [turn, changeTurn] = useState("X");
     const [winner, setWinner] = useState("nobody");
-    const newWinner = Winner(rows);
+    let newWinner = null;
+    if(isValidTurn(turn)){
+        newWinner = Winner(rows,turn);
+    }
     if(newWinner !== null && winner === "nobody"){
         setWinner(newWinner);
     }
@@ -54,7 +57,7 @@ interface Counter {
     empty: number
 }
 
-function Winner(board: Array<Array<"X" | "O" | null>>): "X" | "O" | "tie" | null{
+function Winner(board: Array<Array<"X" | "O" | null>>,turn: "X" | "O"): "X" | "O" | "tie" | null{
     const victory_triplets = [
         [0,1,2],
         [0,3,6],
@@ -66,6 +69,16 @@ function Winner(board: Array<Array<"X" | "O" | null>>): "X" | "O" | "tie" | null
         [6,7,8]
     ]
     let tie = true;
+    let lastTurn = true;
+    let ctr = 0;
+    for(let i = 0;i < 9;i++){
+        if(getSquare(board,i) === null){
+            ctr++;
+        }
+    }
+    if(ctr >= 2){
+        lastTurn = false;
+    }
     for(let win = 0;win < victory_triplets.length;win++){
         let counter: Counter = {X: 0,O: 0,empty: 0}
         let cmp = getSquare(board,victory_triplets[win][0])
@@ -84,6 +97,12 @@ function Winner(board: Array<Array<"X" | "O" | null>>): "X" | "O" | "tie" | null
         }
         if(counter.X === 3 || counter.O === 3){
             return cmp;
+        }
+        if(lastTurn && turn === "X"){
+            counter.O--;
+        }
+        else if(lastTurn && turn === "O"){
+            counter.X--;
         }
         if((counter.X + counter.empty === 3) || (counter.O + counter.empty === 3)){
             tie = false;

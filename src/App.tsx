@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import './App.css';
+import './App.scss';
 import {Dashboard} from "./tic-tac-toe/components/Dashboard";
 import {Changelog} from "./info/changelog/Changelog";
 import { Todo } from './info/Todo/Todo';
-
+import Cookies from "universal-cookie";
+import Button from "react-bootstrap/Button"
+import 'bootstrap/dist/css/bootstrap.min.css'
 export interface inactiveProps{
   enabler: () => void
 }
@@ -25,6 +27,21 @@ function App() {
     updateViewing(new Array<(props: any) => JSX.Element>());
   }
 
+  async function setCookie(): Promise<void>{
+    const cookies = new Cookies();
+    cookies.set("test","this is a test");
+  }
+
+  function viewCookie(): void{
+    const cookies = new Cookies();
+    if(cookies.get("test")){
+      alert("You have a cookie!");
+    }
+    else{
+      alert("You are cookieless!");
+    }
+  }
+
   return (
   <>
   <section>
@@ -33,6 +50,16 @@ function App() {
     </div>
     <hr/>
     {<Dashboard disable={() =>{stopViewing(Dashboard)}} enable={() =>{addViewing(Dashboard)}} active={viewing.includes(Dashboard)}/>}
+    <hr/>
+    <div>
+    Click this link to get a cookie!
+    </div>
+    <div>
+      <Button onClick = {setCookie}>get cookie</Button>
+    </div>
+    <div>
+      <Button onClick={viewCookie}>see if cookie is present</Button>
+    </div>
     <hr/>
     <footer>
       <Changelog disable = {() => {stopViewing(Changelog)}} enable={() => {addViewing(Changelog)}} active={viewing.includes(Changelog)}/>
