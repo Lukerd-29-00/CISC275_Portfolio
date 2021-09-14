@@ -6,6 +6,7 @@ import { Todo } from './info/Todo/Todo';
 import Cookies from "universal-cookie";
 import Button from "react-bootstrap/Button"
 import 'bootstrap/dist/css/bootstrap.min.css'
+import {Board} from "./Checkers/Board"
 export interface inactiveProps{
   enabler: () => void
 }
@@ -52,14 +53,17 @@ function App() {
     {<Dashboard disable={() =>{stopViewing(Dashboard)}} enable={() =>{addViewing(Dashboard)}} active={viewing.includes(Dashboard)}/>}
     <hr/>
     <div>
-    Click this link to get a cookie!
+    Click this button to get a cookie!
     </div>
     <div>
       <Button onClick = {setCookie}>get cookie</Button>
     </div>
+    <br/>
     <div>
       <Button onClick={viewCookie}>see if cookie is present</Button>
     </div>
+    <hr/>
+    <Board />
     <hr/>
     <footer>
       <Changelog disable = {() => {stopViewing(Changelog)}} enable={() => {addViewing(Changelog)}} active={viewing.includes(Changelog)}/>
