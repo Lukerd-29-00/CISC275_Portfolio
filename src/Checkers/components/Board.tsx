@@ -1,6 +1,6 @@
 import {useState} from 'react'
 import { useSquares } from '../hooks/UseSquares'
-import { CheckersSquare } from './CheckersSquare';
+import { CheckersSquare, SquareProps } from './CheckersSquare';
 export interface Position {
     row: number,
     col: number
@@ -23,18 +23,23 @@ export interface Move {
     path: Array<Position>
 }
 
-function getTargets(position: Position | null,board: Array<Array<Square>>,empty: boolean = false): Array<Position>{
+function getTargets(position: Position | null,board: Array<Array<Square>>,empty: boolean = false,piece?: Piece): Array<Position>{
     let output = new Array<Position>();
+    let firstMove = false;
     if(position == null){
         return output;
     }
-    if(board[position.row][position.col].piece !== null && board[position.row][position.col].piece?.king){
+    if(piece === undefined){
+        piece = (board[position.row][position.col].piece as Piece);
+        firstMove = true;
+    }
+    if(piece.king){
         output.push({row: position.row+1,col:position.col+1});
         output.push({row:position.row+1,col:position.col-1});
         output.push({row:position.row-1,col:position.col+1});
         output.push({row:position.row-1,col:position.col-1});
     }
-    else if(board[position.row][position.col].piece !== null && board[position.row][position.col].piece?.color == "black"){
+    else if(piece.color == "black"){
         output.push({row: position.row+1,col:position.col+1});
         output.push({row:position.row+1,col:position.col-1});
     }
@@ -49,12 +54,18 @@ function getTargets(position: Position | null,board: Array<Array<Square>>,empty:
         }
         return false;
     })
+
+    let newOutput = new Array<Position>();
     if(!empty){
         output = output.filter((value: Position) => {
             return board[value.row][value.col].piece === null;
         })
         for(const pos of output){
-            output = output.concat(getTargets(pos,board,true));
+            let posTargets = getTargets(pos,board,true,piece);
+            if(posTargets.length > 0 || firstMove){
+                newOutput.push(pos);
+                newOutput = newOutput.concat(posTargets);
+            }
         }
     }
     else{
@@ -62,10 +73,14 @@ function getTargets(position: Position | null,board: Array<Array<Square>>,empty:
             return board[value.row][value.col].piece !== null;
         })
         for(const pos of output){
-            output = output.concat(getTargets(pos,board));
+            let posTargets = getTargets(pos,board,false,piece);
+            if(posTargets.length > 0 || firstMove){
+                newOutput.push(pos)
+                newOutput.concat(posTargets);
+            }
         }
     }
-    return output;
+    return newOutput;
 }
 
 export function Board(props: any){
@@ -79,7 +94,7 @@ export function Board(props: any){
             return (
                 <div className="board-row">
                     {row.map((square: Square,col: number) => {
-                        let output = {position: {row: rowIndex,col: col},squareColor: squares[rowIndex][col].color,piece: squares[rowIndex][col].piece !== null,setActive: setActive,highlighted:squares[rowIndex][col].highlighted,setSquaresHighlighted: setSquaresHighlighted,getTargets: ((position: Position | null) => {return getTargets(position,squares)}),children: <></>}
+                        let output: SquareProps = {position: {row: rowIndex,col: col},squareColor: squares[rowIndex][col].color,piece: squares[rowIndex][col].piece !== null,setActive: setActive,highlighted:squares[rowIndex][col].highlighted,setSquaresHighlighted: setSquaresHighlighted,getTargets: ((position: Position | null) => {return getTargets(position,squares)}),squareSelected: active !== null,movePiece: active !== null ? (newPosition: Position) => {movePiece(active,newPosition)} : (newPosition: Position) => {return;},children: <></>}
 
                         if(square.piece !== null && square.piece.color == "black"){
                             output.children = <span className="dot"/>

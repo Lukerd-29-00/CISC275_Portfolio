@@ -33,13 +33,14 @@ export function useSquares(): any{
 
     const [squares, updateSquares] = useState(newBoard);
 
-    const movePiece = (currentPosition: Position,newPosition: Position) => {
+    const movePiece = (currentPosition: Position,newPosition: Position,targets: Array<Position>) => {
         let output = new Array<Array<Square>>().concat(squares);
 
         const piece = output[currentPosition.row][currentPosition.col].piece;
         const destination = output[newPosition.row][newPosition.col]
-        if(output[newPosition.row][newPosition.col] == null){
-            output[newPosition.row][newPosition.col] = {piece: piece,color: destination.color,highlighted: destination.highlighted}
+        if(output[newPosition.row][newPosition.col].piece == null){
+            output[newPosition.row][newPosition.col] = {piece: piece,color: destination.color,highlighted: false}
+            output[currentPosition.row][currentPosition.col] = {piece: null,color: output[currentPosition.row][currentPosition.col].color,highlighted:false}
             updateSquares(output);
         }
         else{
