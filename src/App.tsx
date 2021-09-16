@@ -63,7 +63,7 @@ function App() {
     Click this button to get a cookie! (This was created using the example in the readme of the universal-cookie github repository.)
     </div>
     <div>
-      <Button onClick = {setCookie}>get cookie</Button>
+      <button id="cookie" onClick = {setCookie}/>
     </div>
     <br/>
     <div>
