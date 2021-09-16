@@ -49,11 +49,28 @@
 }
 
 .square.dark {
-  background:#282c34;
+  background:#999;
+}
+
+.dot {
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  background: black;
+  display: inline-block;
+  
+}
+
+.dot.red {
+  background: #ff0000;
+}
+
+.square.highlighted {
+  background:aquamarine
 }
 
 .square.dark:disabled {
-  background:#282c34;
+  background:#999;
   border: 1px solid #999;
   float: left;
   font-size: 24px;

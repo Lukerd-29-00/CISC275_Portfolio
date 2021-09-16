@@ -6,7 +6,7 @@ import { Todo } from './info/Todo/Todo';
 import Cookies from "universal-cookie";
 import Button from "react-bootstrap/Button"
 import 'bootstrap/dist/css/bootstrap.min.css'
-import {Board} from "./Checkers/Board"
+import {Board} from "./Checkers/components/Board"
 export interface inactiveProps{
   enabler: () => void
 }
