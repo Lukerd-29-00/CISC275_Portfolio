@@ -1,5 +1,5 @@
 import {useState} from 'react'
-import {Position, Square, Move} from "../components/Board"
+import {Position, Square} from "../components/CheckersBoard"
 
 export function useSquares(): any{
 
@@ -13,11 +13,11 @@ export function useSquares(): any{
                 let pieceColor: "black" | "red" = "red"
                 if(row < 3){
                     pieceColor = "black";
-                    let piece = color == "black" ? {color: pieceColor, king: false} : null;
+                    let piece = color === "black" ? {color: pieceColor, king: false} : null;
                     newRow[col] = ({piece: piece,color: color,highlighted: false});
                 }
                 else if(row > 4){
-                    let piece = color == "black" ? {color: pieceColor, king: false} : null;
+                    let piece = color === "black" ? {color: pieceColor, king: false} : null;
                     newRow[col] = ({piece: piece,color: color,highlighted: false});
                 }
                 else{

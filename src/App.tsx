@@ -1,14 +1,21 @@
 import { useState } from 'react';
 import './App.scss';
-import {Dashboard} from "./tic-tac-toe/components/Dashboard";
+import {TicTacToeDashboard} from "./tic-tac-toe/components/TicTacToeDashboard";
 import {Changelog} from "./info/changelog/Changelog";
 import { Todo } from './info/Todo/Todo';
 import Cookies from "universal-cookie";
 import Button from "react-bootstrap/Button"
 import 'bootstrap/dist/css/bootstrap.min.css'
-import {Board} from "./Checkers/components/Board"
-export interface inactiveProps{
+import { CheckersDashboard } from './Checkers/components/CheckersDashboard';
+
+export interface inactiveProps {
   enabler: () => void
+}
+
+export interface DashboardProps {
+  enable: () => void
+  disable: () => void
+  active: boolean
 }
 
 function App() {
@@ -50,10 +57,10 @@ function App() {
       Hi! my name is Lucas Driscoll (email <a href = "mailto:lucasd@udel.edu">lucasd@udel.edu</a>), and this is the first page of my CISC 275-010 portfolio! this page is hosted on github pages using <a href="https://github.com/Lukerd-29-00/Portfolio">this repository</a>.
     </div>
     <hr/>
-    {<Dashboard disable={() =>{stopViewing(Dashboard)}} enable={() =>{addViewing(Dashboard)}} active={viewing.includes(Dashboard)}/>}
+    {<TicTacToeDashboard disable={() =>{stopViewing(TicTacToeDashboard)}} enable={() =>{addViewing(TicTacToeDashboard)}} active={viewing.includes(TicTacToeDashboard)}/>}
     <hr/>
     <div>
-    Click this button to get a cookie!
+    Click this button to get a cookie! (This was created using the example in the readme of the universal-cookie github repository.)
     </div>
     <div>
       <Button onClick = {setCookie}>get cookie</Button>
@@ -63,7 +70,7 @@ function App() {
       <Button onClick={viewCookie}>see if cookie is present</Button>
     </div>
     <hr/>
-    <Board />
+    <CheckersDashboard disable={() => {stopViewing(CheckersDashboard)}} enable={()=>{addViewing(CheckersDashboard)}} active={viewing.includes(CheckersDashboard)}/>
     <hr/>
     <footer>
       <Changelog disable = {() => {stopViewing(Changelog)}} enable={() => {addViewing(Changelog)}} active={viewing.includes(Changelog)}/>

@@ -23,6 +23,10 @@ export interface Move {
     path: Array<Position>
 }
 
+interface NoProps {
+
+}
+
 function getTargets(position: Position | null,board: Array<Array<Square>>,empty: boolean = false,piece?: Piece): Array<Position>{
     let output = new Array<Position>();
     let firstMove = false;
@@ -39,7 +43,7 @@ function getTargets(position: Position | null,board: Array<Array<Square>>,empty:
         output.push({row:position.row-1,col:position.col+1});
         output.push({row:position.row-1,col:position.col-1});
     }
-    else if(piece.color == "black"){
+    else if(piece.color === "black"){
         output.push({row: position.row+1,col:position.col+1});
         output.push({row:position.row+1,col:position.col-1});
     }
@@ -83,35 +87,33 @@ function getTargets(position: Position | null,board: Array<Array<Square>>,empty:
     return newOutput;
 }
 
-export function Board(props: any){
+export function CheckersBoard(props: NoProps){
     const [squares, movePiece, setSquaresHighlighted] = useSquares();
     const [active, setActive] = useState<Position | null>(null);
-
-
-    return (
+        return (
         <div className="container">
         {squares.map((row: Square[],rowIndex: number) => {
             return (
-                <div className="board-row">
-                    {row.map((square: Square,col: number) => {
-                        let output: SquareProps = {position: {row: rowIndex,col: col},squareColor: squares[rowIndex][col].color,piece: squares[rowIndex][col].piece !== null,setActive: setActive,highlighted:squares[rowIndex][col].highlighted,setSquaresHighlighted: setSquaresHighlighted,getTargets: ((position: Position | null) => {return getTargets(position,squares)}),squareSelected: active !== null,movePiece: active !== null ? (newPosition: Position) => {movePiece(active,newPosition)} : (newPosition: Position) => {return;},children: <></>}
-
-                        if(square.piece !== null && square.piece.color == "black"){
-                            output.children = <span className="dot"/>
-                            return CheckersSquare(output);
-                        }
-                        else if(square.piece !== null && square.piece.color == "red"){
-                            output.children = <span className="dot red"/>
-                            return CheckersSquare(output);
-                        }
-                        return CheckersSquare(output);
-
-                    })
-                }
-            </div>
-            )
-        })}
-        </div>
-    )
+                    <div className="board-row">
+                        {row.map((square: Square,col: number) => {
+                            let output: SquareProps = {position: {row: rowIndex,col: col},squareColor: squares[rowIndex][col].color,piece: squares[rowIndex][col].piece !== null,setActive: setActive,highlighted:squares[rowIndex][col].highlighted,setSquaresHighlighted: setSquaresHighlighted,getTargets: ((position: Position | null) => {return getTargets(position,squares)}),squareSelected: active !== null,movePiece: active !== null ? (newPosition: Position) => {movePiece(active,newPosition)} : (newPosition: Position) => {return;},children: <></>, selected: active !== null ? active.row === rowIndex && active.col === col : false}
     
-}
+                            if(square.piece !== null && square.piece.color === "black"){
+                                output.children = <span className="dot"/>
+                                return CheckersSquare(output);
+                            }
+                            else if(square.piece !== null && square.piece.color === "red"){
+                                output.children = <span className="dot red"/>
+                                return CheckersSquare(output);
+                            }
+                            return CheckersSquare(output);
+    
+                        })
+                    }
+                </div>
+                )
+            })}
+            </div>
+        )
+    }
+
