@@ -27,64 +27,103 @@ interface NoProps {
 
 }
 
-function getTargets(position: Position | null,board: Array<Array<Square>>,empty: boolean = false,piece?: Piece): Array<Position>{
-    let output = new Array<Position>();
-    let firstMove = false;
-    if(position == null){
-        return output;
-    }
-    if(piece === undefined){
-        piece = (board[position.row][position.col].piece as Piece);
-        firstMove = true;
+
+function getTargetsFromTarget(position: Position,board: Array<Array<Square>>,empty: boolean,piece: Piece): Array<Position>{
+    let reachable = new Array<Position>();
+    if(position === null ){
+        return reachable;
     }
     if(piece.king){
-        output.push({row: position.row+1,col:position.col+1});
-        output.push({row:position.row+1,col:position.col-1});
-        output.push({row:position.row-1,col:position.col+1});
-        output.push({row:position.row-1,col:position.col-1});
+        reachable.push({row: position.row+1,col:position.col+1});
+        reachable.push({row:position.row+1,col:position.col-1});
+        reachable.push({row:position.row-1,col:position.col+1});
+        reachable.push({row:position.row-1,col:position.col-1});
     }
     else if(piece.color === "black"){
-        output.push({row: position.row+1,col:position.col+1});
-        output.push({row:position.row+1,col:position.col-1});
+        reachable.push({row: position.row+1,col:position.col+1});
+        reachable.push({row:position.row+1,col:position.col-1});
     }
     else{
-        output.push({row:position.row-1,col:position.col+1});
-        output.push({row:position.row-1,col:position.col-1});
+        reachable.push({row:position.row-1,col:position.col+1});
+        reachable.push({row:position.row-1,col:position.col-1});
     }
     //ignore spaces outside the board.
-    output = output.filter((value: Position) => {
+    reachable = reachable.filter((value: Position) => {
         if(value.row < 8 && value.row > -1 && value.col < 8 && value.col > -1){
             return true;
         }
         return false;
     })
-
-    let newOutput = new Array<Position>();
-    if(!empty){
-        output = output.filter((value: Position) => {
-            return board[value.row][value.col].piece === null;
+    const output = new Array<Position>();
+    if(empty){
+        reachable = reachable.filter((value: Position) => {
+            return board[value.row][value.col].piece !== null
         })
-        for(const pos of output){
-            let posTargets = getTargets(pos,board,true,piece);
-            if(posTargets.length > 0 || firstMove){
-                newOutput.push(pos);
-                newOutput = newOutput.concat(posTargets);
+        for(const space of reachable){
+            let targets = getTargetsFromTarget(space,board,false,piece);
+            if(targets.length > 0){
+                output.push(space);
+                output.concat(targets);
             }
         }
+    }
+    else if((board[position.row][position.col].piece as Piece).color !== piece.color){
+        reachable = reachable.filter((value: Position) => {
+            return board[value.row][value.col].piece === null
+        })
+        for(const space of reachable){
+            let targets = getTargetsFromTarget(space,board,true,piece);
+            output.push(space);
+            output.concat(targets);
+        }
+    }
+    return output;
+}
+
+function getTargets(position: Position | null,board: Array<Array<Square>>): Array<Position>{
+    let reachable = new Array<Position>();
+    if(position === null || board[position.row][position.col] === null){
+        return reachable;
+    }
+    const piece: Piece = (board[position.row][position.col].piece as Piece);
+    if(piece.king){
+        reachable.push({row: position.row+1,col:position.col+1});
+        reachable.push({row:position.row+1,col:position.col-1});
+        reachable.push({row:position.row-1,col:position.col+1});
+        reachable.push({row:position.row-1,col:position.col-1});
+    }
+    else if(piece.color === "black"){
+        reachable.push({row: position.row+1,col:position.col+1});
+        reachable.push({row:position.row+1,col:position.col-1});
     }
     else{
-        output = output.filter((value: Position) => {
-            return board[value.row][value.col].piece !== null;
-        })
-        for(const pos of output){
-            let posTargets = getTargets(pos,board,false,piece);
-            if(posTargets.length > 0 || firstMove){
-                newOutput.push(pos)
-                newOutput.concat(posTargets);
+        reachable.push({row:position.row-1,col:position.col+1});
+        reachable.push({row:position.row-1,col:position.col-1});
+    }
+    //ignore spaces outside the board.
+    reachable = reachable.filter((value: Position) => {
+        if(value.row < 8 && value.row > -1 && value.col < 8 && value.col > -1){
+            return true;
+        }
+        return false;
+    })
+    let output = new Array<Position>();
+    for(const space of reachable){
+        if(board[space.row][space.col].piece === null){
+            output.push(space);
+        }
+        else {
+            let targets = getTargetsFromTarget(space,board,false,piece)
+            if(targets.length > 0){
+                output.push(space);
+                output = output.concat(targets);
             }
         }
+
     }
-    return newOutput;
+    return output;
+
+    
 }
 
 export function CheckersBoard(props: NoProps){
