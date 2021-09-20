@@ -1,4 +1,5 @@
 import {useState} from 'react'
+import { getPositionOfLineAndCharacter } from 'typescript';
 import { useSquares } from '../hooks/UseSquares'
 import { CheckersSquare, SquareProps } from './CheckersSquare';
 export interface Position {
@@ -15,12 +16,13 @@ export interface Piece {
 export interface Square{
     piece: Piece | null
     color: "white" | "black"
-    highlighted: boolean
+    highlighted: boolean,
+    position: Position
 }
 
 export interface Move {
-    deletes: Array<Position>
-    path: Array<Position>
+    deletes: Square | null
+    destination: Square
 }
 
 interface NoProps {
@@ -28,121 +30,120 @@ interface NoProps {
 }
 
 
-function getTargetsFromTarget(position: Position,board: Array<Array<Square>>,empty: boolean,piece: Piece): Array<Position>{
-    let reachable = new Array<Position>();
-    if(position === null ){
-        return reachable;
+function getAdjacentSquares(square: Square, board: Array<Array<Square>>, piece?: Piece): Array<Square>{
+    const up = [{row: square.position.row-1,col:square.position.col-1},{row:square.position.row-1,col:square.position.col+1}];
+    const down = [{row: square.position.row+1,col:square.position.col-1},{row:square.position.row+1,col: square.position.col+1}]
+    const upanddown = up.concat(down)
+    let sqs = new Array<Position>();
+    if(piece === undefined && square.piece === null){
+        throw Error("No piece to get targets of!")
     }
+    else if(piece === undefined){
+        piece = (square.piece as Piece);
+    }
+    let output = new Array<Square>();
     if(piece.king){
-        reachable.push({row: position.row+1,col:position.col+1});
-        reachable.push({row:position.row+1,col:position.col-1});
-        reachable.push({row:position.row-1,col:position.col+1});
-        reachable.push({row:position.row-1,col:position.col-1});
+        sqs = upanddown
     }
-    else if(piece.color === "black"){
-        reachable.push({row: position.row+1,col:position.col+1});
-        reachable.push({row:position.row+1,col:position.col-1});
+    else if(piece.color === "red"){
+        sqs = up
     }
     else{
-        reachable.push({row:position.row-1,col:position.col+1});
-        reachable.push({row:position.row-1,col:position.col-1});
+        sqs = down
     }
-    //ignore spaces outside the board.
-    reachable = reachable.filter((value: Position) => {
-        if(value.row < 8 && value.row > -1 && value.col < 8 && value.col > -1){
-            return true;
-        }
-        return false;
-    })
-    const output = new Array<Position>();
-    if(empty){
-        reachable = reachable.filter((value: Position) => {
-            return board[value.row][value.col].piece !== null
-        })
-        for(const space of reachable){
-            let targets = getTargetsFromTarget(space,board,false,piece);
-            if(targets.length > 0){
-                output.push(space);
-                output.concat(targets);
-            }
-        }
-    }
-    else if((board[position.row][position.col].piece as Piece).color !== piece.color){
-        reachable = reachable.filter((value: Position) => {
-            return board[value.row][value.col].piece === null
-        })
-        for(const space of reachable){
-            let targets = getTargetsFromTarget(space,board,true,piece);
-            output.push(space);
-            output.concat(targets);
+    for(const pos of sqs){
+        if(pos.row >= 0 && pos.row <= 7 && pos.col >= 0 && pos.col <= 7){
+            output.push(board[pos.row][pos.col]);
         }
     }
     return output;
 }
 
-function getTargets(position: Position | null,board: Array<Array<Square>>): Array<Position>{
-    let reachable = new Array<Position>();
-    if(position === null || board[position.row][position.col] === null){
-        return reachable;
+function getAdjacentEnemyPieces(square: Square | null,board: Array<Array<Square>>,piece?: Piece): Array<Square>{
+    if(square === null || square.piece === null){
+        return [];
     }
-    const piece: Piece = (board[position.row][position.col].piece as Piece);
-    if(piece.king){
-        reachable.push({row: position.row+1,col:position.col+1});
-        reachable.push({row:position.row+1,col:position.col-1});
-        reachable.push({row:position.row-1,col:position.col+1});
-        reachable.push({row:position.row-1,col:position.col-1});
-    }
-    else if(piece.color === "black"){
-        reachable.push({row: position.row+1,col:position.col+1});
-        reachable.push({row:position.row+1,col:position.col-1});
-    }
-    else{
-        reachable.push({row:position.row-1,col:position.col+1});
-        reachable.push({row:position.row-1,col:position.col-1});
-    }
-    //ignore spaces outside the board.
-    reachable = reachable.filter((value: Position) => {
-        if(value.row < 8 && value.row > -1 && value.col < 8 && value.col > -1){
-            return true;
-        }
-        return false;
+    return getAdjacentSquares(square,board,piece).filter((sq: Square) => {
+        return sq.piece !== null && sq.piece.color !== (square.piece as Piece).color
     })
-    let output = new Array<Position>();
-    for(const space of reachable){
-        if(board[space.row][space.col].piece === null){
-            output.push(space);
-        }
-        else {
-            let targets = getTargetsFromTarget(space,board,false,piece)
-            if(targets.length > 0){
-                output.push(space);
-                output = output.concat(targets);
-            }
-        }
+}
 
+function getAdjacentEmptySquares(square: Square | null, board: Array<Array<Square>>,piece?: Piece): Array<Square>{
+    if(square == null || square.piece === null){
+        return [];
     }
-    return output;
-
-    
+    return getAdjacentSquares(square,board,piece).filter((sq: Square) => {
+        return sq.piece === null;
+    })
 }
 
 export function CheckersBoard(props: NoProps){
     const [squares, movePiece, setSquaresHighlighted] = useSquares();
-    const [active, setActive] = useState<Position | null>(null);
+    const [selectedSquare, selectSquare] = useState<Square | null>(null);
+    const [redsTurn, setRedsTurn] = useState(true);
+    const [isFirstMove, setIsFirstMove] = useState(true);
+    const [selectedPiece, selectPiece] = useState<Piece | null>(null)
+    let moves = new Array<Move>();
+    if(selectedSquare !== null){
+        //if this is the first move of the turn, allow moving into nearby empty spaces.
+        if(isFirstMove){
+            moves = moves.concat(getAdjacentEmptySquares(selectedSquare,squares).map((square :Square) => {
+                return {destination: square,deletes: null}
+            }))
+        }
+        //Add any squares that kill nearby enemies.
+        const enemies = getAdjacentEnemyPieces(selectedSquare,squares,(selectedSquare.piece as Piece));
+        for(const enemy of enemies){
+            moves = moves.concat(getAdjacentEmptySquares(enemy,squares,(selectedSquare.piece as Piece)).map((destination: Square) => {
+                return {destination: destination,deletes: enemy}
+            }))
+        }
+        //If no moves can be made, the other player gets their turn.
+        if(moves.length === 0){
+            setRedsTurn(!redsTurn);
+            setIsFirstMove(true);
+            selectSquare(null);
+            selectPiece(null);
+            let allSquares = new Array<Square>(64);
+            for(let i = 0;i < 64;i++){
+                allSquares[i] = squares[Math.floor(i/8)][i % 8]
+            }
+            setSquaresHighlighted(allSquares,false);
+        }
+        else{
+            for(const move of moves){
+                if(!squares[move.destination.position.row][move.destination.position.col].highlighted){
+                    
+                    setSquaresHighlighted([move.destination],true);
+                    
+                }
+            }
+        }
+    }
         return (
         <div className="container">
         {squares.map((row: Square[],rowIndex: number) => {
             return (
                     <div className="board-row">
                         {row.map((square: Square,col: number) => {
-                            let output: SquareProps = {position: {row: rowIndex,col: col},squareColor: squares[rowIndex][col].color,piece: squares[rowIndex][col].piece !== null,setActive: setActive,highlighted:squares[rowIndex][col].highlighted,setSquaresHighlighted: setSquaresHighlighted,getTargets: ((position: Position | null) => {return getTargets(position,squares)}),squareSelected: active !== null,movePiece: active !== null ? (newPosition: Position) => {movePiece(active,newPosition)} : (newPosition: Position) => {return;},children: <></>, selected: active !== null ? active.row === rowIndex && active.col === col : false}
+                            let output: SquareProps = {
+                                square: squares[rowIndex][col],
+                                redsTurn: redsTurn,
+                                moves: moves,
+                                selectSquare: selectSquare,
+                                movePiece: (move: Move) => {movePiece(selectedSquare,move)},
+                                firstMove: isFirstMove,
+                                setFirstMove: setIsFirstMove,
+                                selectPiece: selectPiece,
+                                child: <></>    
+                            }
     
                             if(square.piece !== null && square.piece.color === "black"){
-                                output.children = <span className="dot"/>
+                                output.child = <span className="dot"/>
                                 return CheckersSquare(output);
                             }
                             else if(square.piece !== null && square.piece.color === "red"){
-                                output.children = <span className="dot red"/>
+                                output.child = <span className="dot red"/>
                                 return CheckersSquare(output);
                             }
                             return CheckersSquare(output);

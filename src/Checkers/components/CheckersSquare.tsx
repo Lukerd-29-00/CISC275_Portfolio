@@ -1,44 +1,37 @@
-import {Position} from "./CheckersBoard"
+import {Piece, Square, Move} from "./CheckersBoard"
 export interface SquareProps {
-    position: Position,
-    squareColor: "white" | "black",
-    piece: boolean,
-    highlighted: boolean,
-    squareSelected: boolean,
-    selected: boolean,
-    setActive: (arg: Position | null) => void,
-    setSquaresHighlighted: (position: Array<Position>,highlight: boolean) => void 
-    getTargets: (position: Position | null) => Array<Position>
-    movePiece: (newPosition: Position) => void
-    children: JSX.Element | undefined
-}
-
-export function setNoSquaresHighlighted(setSquaresHighlighted: ((position: Array<Position>,highlight: boolean) => void)){
-    for(let row = 0;row < 8;row++){
-        for(let col = 0;col < 8;col++){
-            setSquaresHighlighted([{row: row,col: col}],false);
-        }
-    }
+    square: Square
+    redsTurn: boolean
+    moves: Array<Move>
+    selectSquare: (square: Square) => void
+    movePiece: (move: Move) => void
+    firstMove: boolean
+    setFirstMove: (firstMove: boolean) => void
+    selectPiece: (piece: Piece | null) => void
+    child: JSX.Element
 }
 
 export function CheckersSquare(props: SquareProps){
-    if(!props.squareSelected){
+    const moving: boolean = props.moves.length > 0
+    const onClick = () => {
+        if(moving){
+            for(const move of props.moves){
+                if(move.destination.position.row === props.square.position.row && move.destination.position.col === props.square.position.col){
+                    props.movePiece(move);
+                    props.setFirstMove(false);
+                    if(move.deletes !== null){
+                        props.selectSquare(move.destination);
+                    }
+                }
+            }
+        }
+        else{
+            props.selectSquare(props.square);
+            props.selectPiece(props.square.piece)
+        }
+    }
     return (
-        <div key={props.position.col} className="col-sm">
-            <button className={props.squareColor === "white" ? "square" : "square dark"} disabled={(!props.piece) && !props.selected} onClick={props.selected ? () => {props.setActive(null); setNoSquaresHighlighted(props.setSquaresHighlighted);} : () => {props.setActive(props.position); props.setSquaresHighlighted(props.getTargets(props.position),true)}}>
-                {props.children}
-            </button>
-        </div>
+            <button className={props.square.highlighted ? "square highlighted" : props.square.color === "black" ? "square dark" : "square"} onClick={onClick} disabled={moving ? !props.square.highlighted : !(props.square.piece !== null && ((props.redsTurn && props.square.piece.color === "red") || (!props.redsTurn && props.square.piece.color === "black")))}>{props.child}</button>
     )
-    }
-    else{
-        return (
-            <div key={props.position.col} className="col-sm">
-            <button className={props.highlighted ? "square highlighted" : props.squareColor === "white" ? "square" : "square dark"} disabled={(!props.highlighted || props.piece) && !props.selected} onClick={props.selected ? () => {props.setActive(null); setNoSquaresHighlighted(props.setSquaresHighlighted);} : () => {props.setActive(null); setNoSquaresHighlighted(props.setSquaresHighlighted); props.movePiece(props.position)}}>
-                {props.children}
-            </button>
-        </div>
-        )
-    }
 
 }

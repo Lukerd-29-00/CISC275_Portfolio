@@ -1,7 +1,8 @@
 import {useState} from 'react'
-import {Position, Square} from "../components/CheckersBoard"
+import { moveEmitHelpers } from 'typescript';
+import {Move, Piece, Square} from "../components/CheckersBoard"
 
-export function useSquares(): any{
+export function useSquares(): [Array<Array<Square>>,(square: Square | null,move: Move) => void,(squares: Array<Square>,highlight: boolean) => void]{
 
     const newBoard = () => {
         let output = new Array<Array<Square>>(8);
@@ -14,14 +15,14 @@ export function useSquares(): any{
                 if(row < 3){
                     pieceColor = "black";
                     let piece = color === "black" ? {color: pieceColor, king: false} : null;
-                    newRow[col] = ({piece: piece,color: color,highlighted: false});
+                    newRow[col] = ({position: {row: row,col: col},piece: piece,color: color,highlighted: false});
                 }
                 else if(row > 4){
                     let piece = color === "black" ? {color: pieceColor, king: false} : null;
-                    newRow[col] = ({piece: piece,color: color,highlighted: false});
+                    newRow[col] = ({position: {row: row,col: col},piece: piece,color: color,highlighted: false});
                 }
                 else{
-                    newRow[col] = ({piece: null,color: color,highlighted: false});
+                    newRow[col] = ({position: {row: row,col: col},piece: null,color: color,highlighted: false});
                 }
             }
             output[row] = newRow;
@@ -33,28 +34,36 @@ export function useSquares(): any{
 
     const [squares, updateSquares] = useState(newBoard);
 
-    const movePiece = (currentPosition: Position,newPosition: Position,targets: Array<Position>) => {
-        let output = new Array<Array<Square>>().concat(squares);
 
-        const piece = output[currentPosition.row][currentPosition.col].piece;
-        const destination = output[newPosition.row][newPosition.col]
-        if(output[newPosition.row][newPosition.col].piece == null){
-            output[newPosition.row][newPosition.col] = {piece: piece,color: destination.color,highlighted: false}
-            output[currentPosition.row][currentPosition.col] = {piece: null,color: output[currentPosition.row][currentPosition.col].color,highlighted:false}
-            updateSquares(output);
+    const movePiece = (start: Square | null, move: Move) => {
+        const newSquares = new Array<Array<Square>>().concat(squares);
+        if(move.destination.piece !== null){
+            throw Error("Tried to move to an occupied space!")
         }
-        else{
-            throw new Error("Tried to move a piece into an occupied square!")
+        else if(start === null){
+            return;
         }
-    }
-
-    const setSquaresHighlighted = (positions: Array<Position>,highlight: boolean) => {
-        let newSquares = new Array<Array<Square>>().concat(squares);
-        for(const position of positions){
-            newSquares[position.row][position.col].highlighted = highlight;
+        newSquares[move.destination.position.row][move.destination.position.col].piece = start.piece;
+        newSquares[start.position.row][start.position.col].piece = null;
+        if(move.deletes !== null){
+            newSquares[move.deletes.position.row][move.deletes.position.col].piece = null;
+        }
+        for(const row of newSquares){
+            for(const square of row){
+                square.highlighted = false;
+            }
         }
         updateSquares(newSquares);
     }
-    return [squares,movePiece,setSquaresHighlighted]
+    
+    const setSquaresHighlighted = (targetSquares: Array<Square>,highlight: boolean) => {
+        const newSquares = new Array<Array<Square>>().concat(squares)
+        for(const square of targetSquares){
+            newSquares[square.position.row][square.position.col].highlighted = highlight;
+        }
+        updateSquares(newSquares);
+    }
+
+    return [squares, movePiece, setSquaresHighlighted]
 
 }
