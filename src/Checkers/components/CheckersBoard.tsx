@@ -93,7 +93,8 @@ export function CheckersBoard(props: NoProps){
         setSelectedSquare(sq);
     }
     let moves = new Array<Move>();
-    if(selectedSquare !== null && selectedPiece !== null){
+    if(selectedSquare !== null && selectedPiece !== null && startingSquare !== null){
+
         //if this is the first move of the turn, allow moving into nearby empty spaces.
         if(isFirstMove || selectedSquare.piece !== selectedPiece){
             moves = moves.concat(getAdjacentEmptySquares(selectedSquare,squares,selectedPiece).map((square :Square) => {
@@ -109,6 +110,7 @@ export function CheckersBoard(props: NoProps){
         
         //Currently breaks in a case where two different moves have the same destination; instead of highlighting destinations, it should highlight the piece to delete then let you select a square from that piece.
         //If no moves can be made, the other player gets their turn.
+
         if(moves.length === 0){
             setRedsTurn(!redsTurn);
             setIsFirstMove(true);
@@ -144,6 +146,8 @@ export function CheckersBoard(props: NoProps){
                                 firstMove: isFirstMove,
                                 setFirstMove: setIsFirstMove,
                                 selectPiece: selectPiece,
+                                selectedPiece: selectedPiece,
+                                startingSquare: startingSquare,
                                 selectStartingSquare: setStartingSquare,
                                 child: <></>    
                             }
