@@ -79,30 +79,41 @@ function getAdjacentEmptySquares(square: Square | null, board: Array<Array<Squar
 
 export function CheckersBoard(props: NoProps){
     const [squares, movePiece, setSquaresHighlighted] = useSquares();
-    const [selectedSquare, selectSquare] = useState<Square | null>(null);
+    const [selectedSquare, setSelectedSquare] = useState<Square | null>(null);
     const [redsTurn, setRedsTurn] = useState(true);
     const [isFirstMove, setIsFirstMove] = useState(true);
     const [selectedPiece, selectPiece] = useState<Piece | null>(null)
+    const [startingSquare, setStartingSquare] = useState<Square | null>(null);
+    const selectSquare = (sq: Square | null) => {
+        let allSquares = new Array<Square>(64);
+        for(let i = 0;i < 64;i++){
+            allSquares[i] = squares[Math.floor(i/8)][i % 8]
+        }
+        setSquaresHighlighted(allSquares,false);
+        setSelectedSquare(sq);
+    }
     let moves = new Array<Move>();
-    if(selectedSquare !== null){
+    if(selectedSquare !== null && selectedPiece !== null){
         //if this is the first move of the turn, allow moving into nearby empty spaces.
-        if(isFirstMove){
-            moves = moves.concat(getAdjacentEmptySquares(selectedSquare,squares).map((square :Square) => {
-                return {destination: square,deletes: null}
+        if(isFirstMove || selectedSquare.piece !== selectedPiece){
+            moves = moves.concat(getAdjacentEmptySquares(selectedSquare,squares,selectedPiece).map((square :Square) => {
+                return {destination: square,deletes: (selectedSquare.piece as Piece).color !== selectedPiece.color ? selectedSquare : null}
             }))
         }
         //Add any squares that kill nearby enemies.
-        const enemies = getAdjacentEnemyPieces(selectedSquare,squares,(selectedSquare.piece as Piece));
-        for(const enemy of enemies){
-            moves = moves.concat(getAdjacentEmptySquares(enemy,squares,(selectedSquare.piece as Piece)).map((destination: Square) => {
-                return {destination: destination,deletes: enemy}
-            }))
-        }
+        moves = moves.concat(getAdjacentEnemyPieces(selectedSquare,squares,selectedPiece).filter((sq: Square) => {
+            return getAdjacentEmptySquares(sq,squares,selectedPiece).length > 0
+        }).map((place: Square) => {
+                return {destination: place,deletes: null}
+        }));
+        
+        //Currently breaks in a case where two different moves have the same destination; instead of highlighting destinations, it should highlight the piece to delete then let you select a square from that piece.
         //If no moves can be made, the other player gets their turn.
         if(moves.length === 0){
             setRedsTurn(!redsTurn);
             setIsFirstMove(true);
             selectSquare(null);
+            setStartingSquare(null)
             selectPiece(null);
             let allSquares = new Array<Square>(64);
             for(let i = 0;i < 64;i++){
@@ -113,9 +124,7 @@ export function CheckersBoard(props: NoProps){
         else{
             for(const move of moves){
                 if(!squares[move.destination.position.row][move.destination.position.col].highlighted){
-                    
-                    setSquaresHighlighted([move.destination],true);
-                    
+                    setSquaresHighlighted([move.destination],true)  
                 }
             }
         }
@@ -124,26 +133,27 @@ export function CheckersBoard(props: NoProps){
         <div className="container">
         {squares.map((row: Square[],rowIndex: number) => {
             return (
-                    <div className="board-row">
+                    <div className="board-row" key={rowIndex}>
                         {row.map((square: Square,col: number) => {
                             let output: SquareProps = {
                                 square: squares[rowIndex][col],
                                 redsTurn: redsTurn,
                                 moves: moves,
                                 selectSquare: selectSquare,
-                                movePiece: (move: Move) => {movePiece(selectedSquare,move)},
+                                movePiece: (move: Move) => {movePiece(startingSquare,move)},
                                 firstMove: isFirstMove,
                                 setFirstMove: setIsFirstMove,
                                 selectPiece: selectPiece,
+                                selectStartingSquare: setStartingSquare,
                                 child: <></>    
                             }
     
                             if(square.piece !== null && square.piece.color === "black"){
-                                output.child = <span className="dot"/>
+                                output.child = <span className="dot" role="black-piece"/>
                                 return CheckersSquare(output);
                             }
                             else if(square.piece !== null && square.piece.color === "red"){
-                                output.child = <span className="dot red"/>
+                                output.child = <span className="dot red" role="red-piece"/>
                                 return CheckersSquare(output);
                             }
                             return CheckersSquare(output);

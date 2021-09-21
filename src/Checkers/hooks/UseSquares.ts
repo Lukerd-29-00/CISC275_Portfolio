@@ -54,6 +54,7 @@ export function useSquares(): [Array<Array<Square>>,(square: Square | null,move:
             }
         }
         updateSquares(newSquares);
+
     }
     
     const setSquaresHighlighted = (targetSquares: Array<Square>,highlight: boolean) => {
