@@ -4,7 +4,7 @@ export function Inactive(props: inactiveProps){
     return (
     <div>
         <h2><button className="link" onClick={props.enabler}>Checkers (WIP)</button></h2>
-        <p>This is a work-in-progress checkers game. It is not directly based on any tutorial. Currently, the pieces can only move to an empty, diagonally-adjacent square. Click on a piece to see where it can move, and click on a highlighted square to move. The game does not detect when the game is won, and there are occasional crashes caused by a move that could delete one of two possible pieces.</p>
+        <p>This is a work-in-progress checkers game. It works exactly like checkers, but there is currently no win condition. Kings have a gold star in them, and you can deselect a piece that you're moving if you haven't moved yet by clicking on it.</p>
     </div>
     )
 }

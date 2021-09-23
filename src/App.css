@@ -52,13 +52,25 @@
   background:#999;
 }
 
-.dot {
+
+.piece {
+  line-height: 25px;
   height: 25px;
   width: 25px;
   border-radius: 50%;
-  background: black;
+  background: #484848;
+  color:yellow;
+  font-size: 25px;
+  box-shadow: 1px 1px 1px black;
+  padding: 10px 4px 0 3px;
   display: inline-block;
-  
+
+
+}
+
+.piece.red {
+  box-shadow: 1px 1px 1px black;
+  background: #ff0000;
 }
 
 #cookie {
@@ -69,9 +81,7 @@
   background: rgb(173, 129, 63)
 }
 
-.dot.red {
-  background: #ff0000;
-}
+
 
 .square.highlighted {
   background:aquamarine

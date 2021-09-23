@@ -53,6 +53,12 @@ export function useSquares(): [Array<Array<Square>>,(square: Square | null,move:
                 square.highlighted = false;
             }
         }
+        if(move.destination.position.row === 0 && (newSquares[move.destination.position.row][move.destination.position.col].piece as Piece).color === "red" && !(newSquares[move.destination.position.row][move.destination.position.col].piece as Piece).king){
+            (newSquares[move.destination.position.row][move.destination.position.col].piece as Piece).king = true;
+        }
+        else if(move.destination.position.row === 7 && (newSquares[move.destination.position.row][move.destination.position.col].piece as Piece).color === "black" && !(newSquares[move.destination.position.row][move.destination.position.col].piece as Piece).king){
+            (newSquares[move.destination.position.row][move.destination.position.col].piece as Piece).king = true;
+        }
         updateSquares(newSquares);
 
     }
