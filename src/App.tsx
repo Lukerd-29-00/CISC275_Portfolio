@@ -60,7 +60,7 @@ function App() {
     {<TicTacToeDashboard disable={() =>{stopViewing(TicTacToeDashboard)}} enable={() =>{addViewing(TicTacToeDashboard)}} active={viewing.includes(TicTacToeDashboard)}/>}
     <hr/>
     <div>
-    Click this button to get a cookie! (This was created using the example in the readme of the universal-cookie github repository.)
+    Click this button to get a cookie! (This was created using the example in the readme of the universal-cookie github repository.) <a href="https://github.com/Lukerd-29-00/Portfolio/blob/master/src/App.tsx">click here</a> to view the source code.
     </div>
     <div>
       <button id="cookie" onClick = {setCookie}/>

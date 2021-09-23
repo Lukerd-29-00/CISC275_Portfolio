@@ -7,7 +7,7 @@ describe('CheckersBoard', () => {
     render(<CheckersBoard/>)
   })
   it('there should be 64 squares', () => {
-    const buttons = screen.getAllByRole('button')
+    const buttons = screen.getAllByTestId("checkers-square")
     expect(buttons.length).toBe(64);
   })
 
@@ -19,8 +19,7 @@ describe('CheckersBoard', () => {
     const pieces = screen.getAllByTestId("black-piece");
     expect(pieces.length).toBe(12);
   })
-
-
+  
 })
 
 

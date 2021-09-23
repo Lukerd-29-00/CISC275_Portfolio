@@ -67,7 +67,7 @@ export function CheckersSquare(props: SquareProps){
         }
     }
     return (
-            <button className={props.square.highlighted ? "square highlighted" : props.square.color === "black" ? "square dark" : "square"} onClick={onClick} disabled={moving ? !deselect && !props.square.highlighted : !(props.square.piece !== null && ((props.redsTurn && props.square.piece.color === "red") || (!props.redsTurn && props.square.piece.color === "black")))} key={props.square.position.col}>{props.child}</button>
+            <button data-testid="checkers-square" className={props.square.highlighted ? "square highlighted" : props.square.color === "black" ? "square dark" : "square"} onClick={onClick} disabled={moving ? !deselect && !props.square.highlighted : !(props.square.piece !== null && ((props.redsTurn && props.square.piece.color === "red") || (!props.redsTurn && props.square.piece.color === "black")))} key={props.square.position.col}>{props.child}</button>
     )
 
 }

@@ -27,7 +27,10 @@ export function Changelog(props: ChangelogProps){
 
         week_three.push("Added the ability to defeat rival pieces in checkers (including eliminating a chain of them).")
         week_three.push("Added functionality to keep track of whose turn it is in checkers.");
-    
+        week_three.push("Finished the code that determines where a piece can move in checkers.")
+        week_three.push("Added kings to checkers, which are pieces that can move in both directions, rather than only moving toward the opponent's side of the board. Was unable to properly center the * in them that marks them as kings.")
+        week_three.push("Added shadows to the checkers pieces to make them look three-dimensional.")
+        week_three.push("Added links to directories in the repository containing the code for each module for ease of grading.")
         return <section>
             <div>
                 {weeks.map((week: Array<string>, i: number) => {

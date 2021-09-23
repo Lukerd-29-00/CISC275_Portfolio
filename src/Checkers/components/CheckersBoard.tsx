@@ -159,7 +159,7 @@ export function CheckersBoard(props: NoProps){
         <div className="container">
         {squares.map((row: Square[],rowIndex: number) => {
             return (
-                    <div className="board-row" key={rowIndex}>
+                    <div data-testid="checkers-row" className="board-row" key={rowIndex}>
                         {row.map((square: Square,col: number) => {
                             let output: SquareProps = {
                                 square: squares[rowIndex][col],
