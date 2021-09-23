@@ -12,11 +12,11 @@ describe('CheckersBoard', () => {
   })
 
   it("there should be 12 red pieces", () => {
-    const pieces = screen.getAllByRole("red-piece");
+    const pieces = screen.getAllByTestId("red-piece");
     expect(pieces.length).toBe(12);
   })
   it("will contain 12 black pieces", () => {
-    const pieces = screen.getAllByRole("black-piece");
+    const pieces = screen.getAllByTestId("black-piece");
     expect(pieces.length).toBe(12);
   })
 

@@ -178,11 +178,11 @@ export function CheckersBoard(props: NoProps){
                             }
     
                             if(square.piece !== null && square.piece.color === "black"){
-                                output.child = <span className="piece" role="black-piece">{square.piece.king ? "*" : ""}</span>
+                                output.child = <span className="piece" data-testid="black-piece">{square.piece.king ? "*" : ""}</span>
                                 return CheckersSquare(output);
                             }
                             else if(square.piece !== null && square.piece.color === "red"){
-                                output.child = <span className="piece red" role="red-piece">{square.piece.king ? "*" : ""}</span>
+                                output.child = <span className="piece red" data-testid="red-piece">{square.piece.king ? "*" : ""}</span>
                                 return CheckersSquare(output);
                             }
                             return CheckersSquare(output);
