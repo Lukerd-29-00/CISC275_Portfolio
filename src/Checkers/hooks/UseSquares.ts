@@ -2,7 +2,7 @@ import {useState} from 'react'
 import { moveEmitHelpers } from 'typescript';
 import {Move, Piece, Square, getAdjacentEmptySquares, getAdjacentEnemyPieces} from "../components/CheckersBoard"
 
-export function useSquares(): [Array<Array<Square>>,(square: Square | null,move: Move) => "red" | "black" | null,(squares: Array<Square>,highlight: boolean) => void]{
+export function useSquares(): [Array<Array<Square>>,(square: Square | null,move: Move) => "red" | "black" | "tie" | null,(squares: Array<Square>,highlight: boolean) => void]{
 
     const newBoard = () => {
         let output = new Array<Array<Square>>(8);
@@ -79,7 +79,17 @@ export function useSquares(): [Array<Array<Square>>,(square: Square | null,move:
                 }
             }
         }
-        return (!redscanmove ? "black" : !blackscanmove ? "red" : null as "red" | "black" | null);
+        let output: "tie" | "red" | "black" | null = null;
+        if(!redscanmove && !blackscanmove){
+            output = "tie";
+        }
+        else if(!redscanmove){
+            output = "black";
+        }
+        else if(!blackscanmove){
+            output = "red";
+        }
+        return output;
 
     }
     

@@ -91,7 +91,7 @@ export function CheckersBoard(props: NoProps){
     const [isFirstMove, setIsFirstMove] = useState(true);
     const [selectedPiece, selectPiece] = useState<Piece | null>(null)
     const [startingSquare, setStartingSquare] = useState<Square | null>(null);
-    const [winner, setWinner] = useState<"red" | "black" | null>(null);
+    const [winner, setWinner] = useState<"red" | "black" | "tie" | null>(null);
     const selectSquare = (sq: Square | null) => {
         let allSquares = new Array<Square>(64);
         for(let i = 0;i < 64;i++){
