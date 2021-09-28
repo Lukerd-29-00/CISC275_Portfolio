@@ -30,11 +30,11 @@
 }
 
 #chooser {
-  font-family: 'Courier New', Courier, monospace;
-  font-size: small;
-  justify-content: center;
-  text-align: center;
-
+  top:0;
+  height: 100%;
+  position:sticky;
+  overflow-x:inherit;
+  overflow-y:inherit;
 }
 
 .small-link {

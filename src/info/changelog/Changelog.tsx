@@ -39,7 +39,7 @@ export function Changelog(props: ChangelogProps){
         week_four.push("Moved all components (except todo and changelog) into separate repositories with corresponding pages.")
         week_four.push("Added an antiquewhite coloring with react-helmet. Added a gradient at the top.")
         week_four.push("Reformatted the page and added a title at the top.")
-
+        week_four.push("Added bootstrap-styled navbar to navigate to the projects.")
         return <section>
             <div>
                 {weeks.map((week: Array<string>, i: number) => {

@@ -3,8 +3,6 @@ import './App.scss';
 import {Changelog} from "./info/changelog/Changelog";
 import { Todo } from './info/Todo/Todo';
 import Container from "react-bootstrap/Container";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Helmet } from "react-helmet";
 import NavBar from "react-bootstrap/NavBar"
@@ -51,7 +49,7 @@ function App() {
     <div className="app-body">
       <h4>Hi! my name is Lucas Driscoll (email <a href = "mailto:lucasd@udel.edu">lucasd@udel.edu</a>), and this is the first page of my CISC 275-010 portfolio! this page is hosted on github pages using <a href="https://github.com/Lukerd-29-00/Portfolio">this repository</a>.</h4>
       <NavBar bg="light" expand="lg">
-        <Container>
+        <Container id="chooser">
           <NavBar.Brand>projects</NavBar.Brand>
           <NavBar.Toggle aria-controls="basic-navbar-nav"/>
           <NavBar.Collapse id="basic-navbar-nav"/>
