@@ -7,6 +7,8 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Helmet } from "react-helmet";
+import NavBar from "react-bootstrap/NavBar"
+import Nav from "react-bootstrap/Nav"
 
 export interface inactiveProps {
   enabler: () => void
@@ -48,22 +50,18 @@ function App() {
     </header>
     <div className="app-body">
       <h4>Hi! my name is Lucas Driscoll (email <a href = "mailto:lucasd@udel.edu">lucasd@udel.edu</a>), and this is the first page of my CISC 275-010 portfolio! this page is hosted on github pages using <a href="https://github.com/Lukerd-29-00/Portfolio">this repository</a>.</h4>
-      <hr/>
-
-      <Container id="chooser">
-        <Row>
-          <Col>
-            <p><a href="https://lukerd-29-00.github.io/Tic-Tac-Toe/">Tic-Tac-Toe</a></p>
-          </Col>
-          <Col>
-            <p><a href="https://lukerd-29-00.github.io/Checkers/">Checkers</a></p>
-          </Col>
-          <Col>
-            <a href="https://lukerd-29-00.github.io/Bakery/">Bakery</a>
-          </Col>
-        </Row>
-      </Container>
-      <hr/>
+      <NavBar bg="light" expand="lg">
+        <Container>
+          <NavBar.Brand>projects</NavBar.Brand>
+          <NavBar.Toggle aria-controls="basic-navbar-nav"/>
+          <NavBar.Collapse id="basic-navbar-nav"/>
+          <Nav className="me-auto">
+            <Nav.Link href="https://lukerd-29-00.github.io/Tic-Tac-Toe/">Tic-Tac-Toe</Nav.Link>
+            <Nav.Link href="https://lukerd-29-00.github.io/Checkers/">Checkers</Nav.Link>
+            <Nav.Link href="https://lukerd-29-00.github.io/Bakery/">Bakery</Nav.Link>
+          </Nav>
+        </Container>
+      </NavBar>
     </div>
     <footer className="app-body">
       <Changelog disable = {() => {stopViewing(Changelog)}} enable={() => {addViewing(Changelog)}} active={viewing.includes(Changelog)}/>
