@@ -60,7 +60,7 @@ function getAdjacentSquares(square: Square, board: Array<Array<Square>>, piece?:
     return output;
 }
 
-function getAdjacentEnemyPieces(square: Square | null,board: Array<Array<Square>>,piece?: Piece): Array<Square>{
+export function getAdjacentEnemyPieces(square: Square | null,board: Array<Array<Square>>,piece?: Piece): Array<Square>{
     if(square === null){
         return [];
     }
@@ -75,7 +75,7 @@ function getAdjacentEnemyPieces(square: Square | null,board: Array<Array<Square>
     })
 }
 
-function getAdjacentEmptySquares(square: Square | null, board: Array<Array<Square>>,piece?: Piece): Array<Square>{
+export function getAdjacentEmptySquares(square: Square | null, board: Array<Array<Square>>,piece?: Piece): Array<Square>{
     if(square == null || square.piece === null){
         return [];
     }
@@ -84,7 +84,6 @@ function getAdjacentEmptySquares(square: Square | null, board: Array<Array<Squar
     })
 }
 
-
 export function CheckersBoard(props: NoProps){
     const [squares, movePiece, setSquaresHighlighted] = useSquares();
     const [selectedSquare, setSelectedSquare] = useState<Square | null>(null);
@@ -92,7 +91,7 @@ export function CheckersBoard(props: NoProps){
     const [isFirstMove, setIsFirstMove] = useState(true);
     const [selectedPiece, selectPiece] = useState<Piece | null>(null)
     const [startingSquare, setStartingSquare] = useState<Square | null>(null);
-    const [winner, setWinner] = useState<string | null>(null);
+    const [winner, setWinner] = useState<"red" | "black" | null>(null);
     const selectSquare = (sq: Square | null) => {
         let allSquares = new Array<Square>(64);
         for(let i = 0;i < 64;i++){
@@ -156,6 +155,8 @@ export function CheckersBoard(props: NoProps){
         }
     }
         return (
+        <>
+        <p>{!winner ? redsTurn ? "red's turn" : "black's turn" : `${winner} wins!`}</p>
         <div className="container">
         {squares.map((row: Square[],rowIndex: number) => {
             return (
@@ -166,7 +167,7 @@ export function CheckersBoard(props: NoProps){
                                 redsTurn: redsTurn,
                                 moves: moves,
                                 selectSquare: selectSquare,
-                                movePiece: (move: Move) => {movePiece(startingSquare,move)},
+                                movePiece: (move: Move) => {setWinner(movePiece(startingSquare,move))},
                                 firstMove: isFirstMove,
                                 setFirstMove: setIsFirstMove,
                                 selectPiece: selectPiece,
@@ -193,6 +194,7 @@ export function CheckersBoard(props: NoProps){
                 )
             })}
             </div>
+            </>
         )
     }
 

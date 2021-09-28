@@ -1,8 +1,8 @@
 import {useState} from 'react'
 import { moveEmitHelpers } from 'typescript';
-import {Move, Piece, Square} from "../components/CheckersBoard"
+import {Move, Piece, Square, getAdjacentEmptySquares, getAdjacentEnemyPieces} from "../components/CheckersBoard"
 
-export function useSquares(): [Array<Array<Square>>,(square: Square | null,move: Move) => void,(squares: Array<Square>,highlight: boolean) => void]{
+export function useSquares(): [Array<Array<Square>>,(square: Square | null,move: Move) => "red" | "black" | null,(squares: Array<Square>,highlight: boolean) => void]{
 
     const newBoard = () => {
         let output = new Array<Array<Square>>(8);
@@ -41,7 +41,7 @@ export function useSquares(): [Array<Array<Square>>,(square: Square | null,move:
             throw Error("Tried to move to an occupied space!")
         }
         else if(start === null){
-            return;
+            return null;
         }
         newSquares[move.destination.position.row][move.destination.position.col].piece = start.piece;
         newSquares[start.position.row][start.position.col].piece = null;
@@ -59,7 +59,27 @@ export function useSquares(): [Array<Array<Square>>,(square: Square | null,move:
         else if(move.destination.position.row === 7 && (newSquares[move.destination.position.row][move.destination.position.col].piece as Piece).color === "black" && !(newSquares[move.destination.position.row][move.destination.position.col].piece as Piece).king){
             (newSquares[move.destination.position.row][move.destination.position.col].piece as Piece).king = true;
         }
+        let redscanmove = false;
+        let blackscanmove = false;
         updateSquares(newSquares);
+        for(const row of newSquares){
+            for(const square of row){
+                if(square.piece){
+                    let moves = new Array<Square>();
+                    moves = moves.concat(getAdjacentEmptySquares(square,newSquares))
+                    moves = moves.concat(getAdjacentEnemyPieces(square,newSquares).filter((enemySquare: Square) => {
+                        return getAdjacentEmptySquares(enemySquare,newSquares,(square.piece as Piece)).length > 0
+                    }))
+                    if(moves.length > 0 && square.piece.color === "red"){
+                        redscanmove = true;
+                    }
+                    else if(moves.length > 0){
+                        blackscanmove = true;
+                    }
+                }
+            }
+        }
+        return (!redscanmove ? "black" : !blackscanmove ? "red" : null as "red" | "black" | null);
 
     }
     
