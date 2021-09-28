@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import './App.scss';
-import {TicTacToeDashboard} from "./tic-tac-toe/components/TicTacToeDashboard";
 import {Changelog} from "./info/changelog/Changelog";
 import { Todo } from './info/Todo/Todo';
-import Cookies from "universal-cookie";
-import Button from "react-bootstrap/Button"
-import 'bootstrap/dist/css/bootstrap.min.css'
-import { CheckersDashboard } from './Checkers/components/CheckersDashboard';
+import Container from "react-bootstrap/Container";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Helmet } from "react-helmet";
 
 export interface inactiveProps {
   enabler: () => void
@@ -35,44 +35,37 @@ function App() {
     updateViewing(new Array<(props: any) => JSX.Element>());
   }
 
-  async function setCookie(): Promise<void>{
-    const cookies = new Cookies();
-    cookies.set("test","this is a test");
-  }
-
-  function viewCookie(): void{
-    const cookies = new Cookies();
-    if(cookies.get("test")){
-      alert("You have a cookie!");
-    }
-    else{
-      alert("You are cookieless!");
-    }
-  }
-
   return (
-  <>
-  <section>
-    <div>
-      Hi! my name is Lucas Driscoll (email <a href = "mailto:lucasd@udel.edu">lucasd@udel.edu</a>), and this is the first page of my CISC 275-010 portfolio! this page is hosted on github pages using <a href="https://github.com/Lukerd-29-00/Portfolio">this repository</a>.
+  <div className="page-default">
+    <Helmet>
+      <style>{'body { background-color: antiquewhite }'}</style>
+    </Helmet>
+  <section className="page-default">
+    <header id="app-header">
+      <div id="title">
+        <h1>Lucas's Portfolio</h1>
+      </div>
+    </header>
+    <div className="app-body">
+      <h4>Hi! my name is Lucas Driscoll (email <a href = "mailto:lucasd@udel.edu">lucasd@udel.edu</a>), and this is the first page of my CISC 275-010 portfolio! this page is hosted on github pages using <a href="https://github.com/Lukerd-29-00/Portfolio">this repository</a>.</h4>
+      <hr/>
+
+      <Container id="chooser">
+        <Row>
+          <Col>
+            <p><a href="https://lukerd-29-00.github.io/Tic-Tac-Toe/">Tic-Tac-Toe</a></p>
+          </Col>
+          <Col>
+            <p><a href="https://lukerd-29-00.github.io/Checkers/">Checkers</a></p>
+          </Col>
+          <Col>
+            <a href="https://lukerd-29-00.github.io/Bakery/">Bakery</a>
+          </Col>
+        </Row>
+      </Container>
+      <hr/>
     </div>
-    <hr/>
-    {<TicTacToeDashboard disable={() =>{stopViewing(TicTacToeDashboard)}} enable={() =>{addViewing(TicTacToeDashboard)}} active={viewing.includes(TicTacToeDashboard)}/>}
-    <hr/>
-    <div>
-    Click this button to get a cookie! (This was created using the example in the readme of the universal-cookie github repository.) <a href="https://github.com/Lukerd-29-00/Portfolio/blob/master/src/App.tsx">click here</a> to view the source code.
-    </div>
-    <div>
-      <button id="cookie" onClick = {setCookie}/>
-    </div>
-    <br/>
-    <div>
-      <Button onClick={viewCookie}>see if cookie is present</Button>
-    </div>
-    <hr/>
-    <CheckersDashboard disable={() => {stopViewing(CheckersDashboard)}} enable={()=>{addViewing(CheckersDashboard)}} active={viewing.includes(CheckersDashboard)}/>
-    <hr/>
-    <footer>
+    <footer className="app-body">
       <Changelog disable = {() => {stopViewing(Changelog)}} enable={() => {addViewing(Changelog)}} active={viewing.includes(Changelog)}/>
       {viewing.includes(Changelog) || viewing.includes(Todo) ? <hr/> : <></>}
       <Todo disable={() => {stopViewing(Todo)}} enable={() => {addViewing(Todo)}} active={viewing.includes(Todo)}/>
@@ -80,7 +73,7 @@ function App() {
       <button className="link" onClick={viewNothing}>Hide all</button>
     </footer>
   </section>
-  </>
+  </div>
     
   );
 }
