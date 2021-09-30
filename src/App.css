@@ -3,6 +3,7 @@
   display:flex;
   justify-content: center;
   background-image: linear-gradient(rgba(253, 212, 159, 0.74),antiquewhite);
+  padding-top: 65px;
 }
 
 #app-header::after {
@@ -18,7 +19,8 @@
 
 .app-body {
   background-color:antiquewhite;
-  margin-top: 0px
+  margin-top: 0px;
+
 }
 
 .app-body::after {

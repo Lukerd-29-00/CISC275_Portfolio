@@ -7,33 +7,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Helmet } from "react-helmet";
 import NavBar from "react-bootstrap/NavBar"
 import Nav from "react-bootstrap/Nav"
-
-export interface inactiveProps {
-  enabler: () => void
-}
+import {NavDropdown } from 'react-bootstrap';
 
 export interface DashboardProps {
-  enable: () => void
-  disable: () => void
   active: boolean
 }
 
-function App() {
-  const [viewing, updateViewing] = useState(() => {return new Array<(props: any) => JSX.Element>();});
-  function addViewing(component: (props: any) => JSX.Element): void{
-    updateViewing(viewing.concat([component]))
-  }
 
-  function stopViewing(component: (props: any) => JSX.Element): void{
-    const i = viewing.indexOf(component);
-    if(i !== -1){
-      updateViewing(viewing.slice(0,i).concat(viewing.slice(i+1,viewing.length)));
-    }
-  }
 
-  function viewNothing(): void{
-    updateViewing(new Array<(props: any) => JSX.Element>());
-  }
+function App(): JSX.Element {
+  const [viewing, updateViewing] = useState<number | null>(null);
 
   return (
   <div className="page-default">
@@ -47,8 +30,12 @@ function App() {
       </div>
     </header>
     <div className="app-body">
-      <h4>Hi! my name is Lucas Driscoll (email <a href = "mailto:lucasd@udel.edu">lucasd@udel.edu</a>), and this is the first page of my CISC 275-010 portfolio! this page is hosted on github pages using <a href="https://github.com/Lukerd-29-00/Portfolio">this repository</a>.</h4>
-      <NavBar bg="light" expand="lg">
+      <h4>Hi! my name is Lucas Driscoll (email <a href = "mailto:lucasd@udel.edu">lucasd@udel.edu</a>), and this is the homepage of my CISC 275-010 portfolio!</h4>
+      <Changelog active={viewing === 0}/>
+      <Todo active={viewing === 1}/>
+    </div>
+    <footer className="app-body">
+    <NavBar bg="light" expand="lg" className="fixed-top">
         <Container id="chooser">
           <NavBar.Brand>projects</NavBar.Brand>
           <NavBar.Toggle aria-controls="basic-navbar-nav"/>
@@ -57,16 +44,16 @@ function App() {
             <Nav.Link href="https://lukerd-29-00.github.io/Tic-Tac-Toe/">Tic-Tac-Toe</Nav.Link>
             <Nav.Link href="https://lukerd-29-00.github.io/Checkers/">Checkers</Nav.Link>
             <Nav.Link href="https://lukerd-29-00.github.io/Bakery/">Bakery</Nav.Link>
+            <NavDropdown title="info" id="basic-nav-dropdown" onSelect = {(eventKey: string | null) => {updateViewing(eventKey === null ? eventKey : parseInt(eventKey,10))}}>
+              <NavDropdown.Item eventKey={0}>Changelog</NavDropdown.Item>
+              <NavDropdown.Item eventKey={1}>Todo</NavDropdown.Item>
+              <NavDropdown.Item>Hide info</NavDropdown.Item>
+              <NavDropdown.Item href="https://github.com/Lukerd-29-00/Portfolio" eventKey={viewing === null ? undefined : viewing.toString()}>Source code</NavDropdown.Item>
+            </NavDropdown>
           </Nav>
         </Container>
       </NavBar>
-    </div>
-    <footer className="app-body">
-      <Changelog disable = {() => {stopViewing(Changelog)}} enable={() => {addViewing(Changelog)}} active={viewing.includes(Changelog)}/>
-      {viewing.includes(Changelog) || viewing.includes(Todo) ? <hr/> : <></>}
-      <Todo disable={() => {stopViewing(Todo)}} enable={() => {addViewing(Todo)}} active={viewing.includes(Todo)}/>
-      {viewing.includes(Todo) ? <hr/> : <></>}
-      <button className="link" onClick={viewNothing}>Hide all</button>
+
     </footer>
   </section>
   </div>

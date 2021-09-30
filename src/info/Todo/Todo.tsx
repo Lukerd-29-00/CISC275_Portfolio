@@ -1,13 +1,7 @@
 
-import { Inactive } from "./inactive/Inactive";
+import { DashboardProps } from "../../App";
 
-interface TodoProps{
-    disable: () => void,
-    enable: () => void,
-    active: boolean,
-}
-
-export function Todo(props: TodoProps): JSX.Element{
+export function Todo(props: DashboardProps): JSX.Element{
     if(props.active){
         let weeks = new Array<Array<string>>();
         let week_one = new Array<string>();
@@ -39,16 +33,12 @@ export function Todo(props: TodoProps): JSX.Element{
                     </div>
                 })}
                 </div>
-                <footer>
-                    <button className="small-link" onClick={props.disable}>collapse</button>
-                </footer>
         </section>
     }
     else{
         return (
-            <div>
-                <Inactive enabler={props.enable}/>
-            </div>
+            <>
+            </>
         )
     }
 
