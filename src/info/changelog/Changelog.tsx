@@ -1,12 +1,6 @@
-import { Inactive } from "./inactive/inactive";
+import { DashboardProps } from "../../App";
 
-interface ChangelogProps {
-    disable: () => void,
-    enable: () => void,
-    active: boolean,
-}
-
-export function Changelog(props: ChangelogProps){
+export function Changelog(props: DashboardProps){
     if(props.active){
         let weeks = new Array<Array<string>>();
         let week_one = new Array<string>();
@@ -53,16 +47,12 @@ export function Changelog(props: ChangelogProps){
                     </div>
                 })}
                 </div>
-                <footer>
-                    <button className="small-link" onClick={props.disable}>collapse</button>
-                </footer>
         </section>
     }
     else{
         return (
-            <div>
-                <Inactive func={props.enable}/>
-            </div>
+            <>
+            </>
         )
     }
 
