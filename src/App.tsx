@@ -48,6 +48,7 @@ function App(): JSX.Element {
               <NavDropdown.Item eventKey={0}>Changelog</NavDropdown.Item>
               <NavDropdown.Item eventKey={1}>Todo</NavDropdown.Item>
               <NavDropdown.Item>Hide info</NavDropdown.Item>
+              <NavDropdown.Divider/>
               <NavDropdown.Item href="https://github.com/Lukerd-29-00/Portfolio" eventKey={viewing === null ? undefined : viewing.toString()}>Source code</NavDropdown.Item>
             </NavDropdown>
           </Nav>
